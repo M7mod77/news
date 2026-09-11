@@ -9,6 +9,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+    <script>
+        // Restores a route encoded by public/404.html (GitHub Pages SPA fallback):
+        //   /news/?/category/sports&a=b  ->  /news/category/sports?a=b
+        // Runs before the app module loads, so React Router boots on the real URL.
+        (function restoreRoute(location) {
+            if (location.search.charAt(1) !== '/') return;
+
+            var decoded = location.search
+                .slice(1)
+                .split('&')
+                .map(function (part) { return part.replace(/~and~/g, '&'); })
+                .join('?');
+
+            window.history.replaceState(
+                null,
+                null,
+                location.pathname.slice(0, -1) + decoded + location.hash
+            );
+        })(window.location);
+    </script>
 </head>
 <body>
     <div id="root"></div>

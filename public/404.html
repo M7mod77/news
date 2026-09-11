@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Techifly — أخبار عربية</title>
+    <script>
+        // GitHub Pages has no rewrite rules: a direct visit to /news/category/sports
+        // serves this file instead of the app. Rather than showing a 404, encode the
+        // requested route into a query string and bounce to /news/, where the small
+        // script in index.html restores it before React Router starts.
+        //
+        //   /news/category/sports?a=b#c  ->  /news/?/category/sports&a=b#c
+        //
+        // SEGMENTS_TO_KEEP is the number of path segments that belong to the site root
+        // itself ('/news' = 1). Keep it in sync with `base` in vite.config.js.
+        (function redirectToApp(location) {
+            var SEGMENTS_TO_KEEP = 1;
+            var segments = location.pathname.split('/');
+
+            var siteRoot = segments.slice(0, 1 + SEGMENTS_TO_KEEP).join('/');
+            var route = segments.slice(1 + SEGMENTS_TO_KEEP).join('/');
+
+            // A single '&' separates the route from the original query string, so any
+            // real '&' inside either part is escaped and restored on the way back.
+            var encodedRoute = route.replace(/&/g, '~and~');
+            var encodedQuery = location.search
+                ? '&' + location.search.slice(1).replace(/&/g, '~and~')
+                : '';
+
+            location.replace(
+                location.protocol + '//' + location.host +
+                siteRoot + '/?/' + encodedRoute + encodedQuery + location.hash
+            );
+        })(window.location);
+    </script>
+</head>
+<body></body>
+</html>
